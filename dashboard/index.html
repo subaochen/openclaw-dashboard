@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>缓存监控仪表板</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #1a202c;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .metric-title {
+      color: #718096;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .metric-value {
+      color: #1a202c;
+      font-size: 42px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .metric-change {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .metric-change.positive {
+      color: #48bb78;
+    }
+
+    .metric-change.negative {
+      color: #f56565;
+    }
+
+    .chart-container {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .chart-title {
+      color: #1a202c;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .chart {
+      height: 300px;
+      position: relative;
+    }
+
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      height: 250px;
+      padding-top: 20px;
+    }
+
+    .bar {
+      width: 60px;
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+      border-radius: 8px 8px 0 0;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .bar:hover {
+      opacity: 0.8;
+    }
+
+    .bar-label {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #718096;
+      white-space: nowrap;
+    }
+
+    .bar-value {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      font-weight: bold;
+      color: #1a202c;
+    }
+
+    .alerts-container {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .alerts-title {
+      color: #1a202c;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .alert {
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .alert.warning {
+      background: #fffaf0;
+      border-left: 4px solid #ed8936;
+    }
+
+    .alert.critical {
+      background: #fff5f5;
+      border-left: 4px solid #f56565;
+    }
+
+    .alert.info {
+      background: #ebf8ff;
+      border-left: 4px solid #4299e1;
+    }
+
+    .alert-icon {
+      font-size: 24px;
+    }
+
+    .alert-content {
+      flex: 1;
+    }
+
+    .alert-message {
+      color: #1a202c;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .alert-suggestion {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .project-name {
+      color: #1a202c;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .project-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .stat {
+      padding: 12px;
+      background: #f7fafc;
+      border-radius: 8px;
+    }
+
+    .stat-label {
+      color: #718096;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      color: #1a202c;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .refresh-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      transition: all 0.2s;
+    }
+
+    .refresh-btn:hover {
+      background: #5a67d8;
+      transform: scale(1.1);
+    }
+
+    .refresh-btn:active {
+      transform: scale(0.95);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: white;
+      font-size: 18px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .spinner {
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚀 缓存监控仪表板</h1>
+      <p class="subtitle">实时监控缓存命中率，持续优化性能</p>
+    </header>
+
+    <div id="dashboard">
+      <div class="loading">
+        <div class="spinner"></div>
+        <div>加载监控数据...</div>
+      </div>
+    </div>
+
+    <button class="refresh-btn" onclick="loadDashboard()" title="刷新数据">🔄</button>
+  </div>
+
+  <script>
+    // 模拟数据（实际应从后端 API 获取）
+    const mockData = {
+      summary: {
+        hitRate: 75.3,
+        totalReads: 248,
+        timeSaved: 156.5,
+        activeProjects: 5
+      },
+      trend: [
+        { date: '2026-04-16', hitRate: 65.2 },
+        { date: '2026-04-17', hitRate: 68.5 },
+        { date: '2026-04-18', hitRate: 72.1 },
+        { date: '2026-04-19', hitRate: 70.8 },
+        { date: '2026-04-20', hitRate: 74.3 },
+        { date: '2026-04-21', hitRate: 76.9 },
+        { date: '2026-04-22', hitRate: 75.3 }
+      ],
+      byType: [
+        { name: 'TA 分析', reads: 45, hits: 45, rate: 100 },
+        { name: 'CTO 决策', reads: 38, hits: 35, rate: 86.8 },
+        { name: '代码理解', reads: 120, hits: 95, rate: 79.2 },
+        { name: '审查意见', reads: 30, hits: 28, rate: 93.3 },
+        { name: 'Git 状态', reads: 15, hits: 14, rate: 93.3 }
+      ],
+      projects: [
+        { name: 'pay-module-core', hitRate: 75.3, reads: 248, timeSaved: 156.5 },
+        { name: 'cnki-system', hitRate: 82.1, reads: 186, timeSaved: 124.3 },
+        { name: 'smart-correction', hitRate: 68.5, reads: 142, timeSaved: 89.2 }
+      ],
+      alerts: [
+        {
+          severity: 'warning',
+          message: 'smart-correction 项目命中率偏低（68.5%）',
+          suggestion: '检查是否频繁变更代码，或缓存策略是否需要调整'
+        },
+        {
+          severity: 'info',
+          message: '代码理解缓存本周节省 89 分钟',
+          suggestion: '继续保持良好使用习惯'
+        }
+      ]
+    };
+
+    function formatNumber(num) {
+      return num.toLocaleString('zh-CN');
+    }
+
+    function renderSummary(data) {
+      return `
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-title">缓存命中率</div>
+            <div class="metric-value">${data.hitRate}%</div>
+            <div class="metric-change positive">↑ 较上周 +5.2%</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">总读取次数</div>
+            <div class="metric-value">${formatNumber(data.totalReads)}</div>
+            <div class="metric-change positive">↑ 较上周 +12%</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">节省时间</div>
+            <div class="metric-value">${data.timeSaved} min</div>
+            <div class="metric-change positive">↑ 较上周 +23 min</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">活跃项目</div>
+            <div class="metric-value">${data.activeProjects}</div>
+            <div class="metric-change">→ 与上周持平</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTrend(trend) {
+      const maxRate = Math.max(...trend.map(d => d.hitRate));
+      const bars = trend.map(day => {
+        const height = (day.hitRate / maxRate) * 220;
+        return `
+          <div class="bar" style="height: ${height}px;">
+            <div class="bar-value">${day.hitRate}%</div>
+            <div class="bar-label">${day.date.slice(5)}</div>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="chart-container">
+          <h2 class="chart-title">📈 命中率趋势（近 7 天）</h2>
+          <div class="chart">
+            <div class="chart-bars">
+              ${bars}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderByType(byType) {
+      const items = byType.map(type => `
+        <div class="stat">
+          <div class="stat-label">${type.name}</div>
+          <div class="stat-value">${type.rate}%</div>
+          <div style="font-size: 12px; color: #718096; margin-top: 4px;">
+            ${type.hits}/${type.reads} 次
+          </div>
+        </div>
+      `).join('');
+
+      return `
+        <div class="chart-container">
+          <h2 class="chart-title">📊 按类型统计</h2>
+          <div class="projects-grid">
+            ${items}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProjects(projects) {
+      const cards = projects.map(project => `
+        <div class="project-card">
+          <div class="project-name">${project.name}</div>
+          <div class="project-stats">
+            <div class="stat">
+              <div class="stat-label">命中率</div>
+              <div class="stat-value">${project.hitRate}%</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">读取次数</div>
+              <div class="stat-value">${project.reads}</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">节省时间</div>
+              <div class="stat-value">${project.timeSaved} min</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">状态</div>
+              <div class="stat-value" style="color: ${project.hitRate >= 70 ? '#48bb78' : '#ed8936'}">
+                ${project.hitRate >= 70 ? '✅ 良好' : '⚠️ 优化中'}
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      return `
+        <div class="chart-container">
+          <h2 class="chart-title">📁 项目监控</h2>
+          <div class="projects-grid">
+            ${cards}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAlerts(alerts) {
+      if (alerts.length === 0) {
+        return `
+          <div class="chart-container">
+            <h2 class="chart-title">⚠️ 告警信息</h2>
+            <p style="color: #718096; text-align: center; padding: 40px;">
+              ✅ 暂无告警，一切正常
+            </p>
+          </div>
+        `;
+      }
+
+      const alertItems = alerts.map(alert => {
+        const icon = alert.severity === 'critical' ? '🔴' : 
+                     alert.severity === 'warning' ? '⚠️' : 'ℹ️';
+        return `
+          <div class="alert ${alert.severity}">
+            <div class="alert-icon">${icon}</div>
+            <div class="alert-content">
+              <div class="alert-message">${alert.message}</div>
+              <div class="alert-suggestion">💡 ${alert.suggestion}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="alerts-container">
+          <h2 class="alerts-title">⚠️ 告警信息</h2>
+          ${alertItems}
+        </div>
+      `;
+    }
+
+    function renderDashboard(data) {
+      const dashboard = document.getElementById('dashboard');
+      dashboard.innerHTML = `
+        ${renderSummary(data.summary)}
+        ${renderTrend(data.trend)}
+        ${renderByType(data.byType)}
+        ${renderProjects(data.projects)}
+        ${renderAlerts(data.alerts)}
+      `;
+    }
+
+    async function loadDashboard() {
+      // 实际应从 API 获取数据
+      // const response = await fetch('/api/metrics/dashboard');
+      // const data = await response.json();
+      
+      // 使用模拟数据
+      renderDashboard(mockData);
+    }
+
+    // 页面加载时初始化
+    loadDashboard();
+
+    // 每 5 分钟自动刷新
+    setInterval(loadDashboard, 5 * 60 * 1000);
+  </script>
+</body>
+</html>

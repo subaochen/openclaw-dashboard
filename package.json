@@ -1,0 +1,45 @@
+{
+  "name": "openclaw-dashboard",
+  "version": "1.0.0",
+  "description": "多 Agent 系统缓存监控与性能可视化仪表板",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+    "test": "jest",
+    "lint": "eslint server/ scripts/",
+    "format": "prettier --write '**/*.{js,css,html}'"
+  },
+  "keywords": [
+    "openclaw",
+    "dashboard",
+    "monitoring",
+    "cache",
+    "agent",
+    "llm",
+    "visualization"
+  ],
+  "author": "OpenClaw Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/openclaw-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/openclaw-dashboard/issues"
+  },
+  "homepage": "https://github.com/yourusername/openclaw-dashboard#readme",
+  "engines": {
+    "node": ">=16",
+    "npm": ">=8"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.3",
+    "prettier": "^3.2.5"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "date": "2026-04-22",
+  "project": "pay-module-core",
+  "cacheReads": {
+    "total": 248,
+    "hits": 187,
+    "hitRate": 0.753
+  },
+  "timeSaved": {
+    "totalMinutes": 156.5,
+    "averagePerHit": 0.84
+  },
+  "byType": {
+    "taAnalysis": {
+      "reads": 45,
+      "hits": 45,
+      "hitRate": 1.0,
+      "timeSaved": 22.5
+    },
+    "ctoDecision": {
+      "reads": 38,
+      "hits": 33,
+      "hitRate": 0.868,
+      "timeSaved": 27.7
+    },
+    "codeUnderstanding": {
+      "reads": 120,
+      "hits": 95,
+      "hitRate": 0.792,
+      "timeSaved": 79.8
+    },
+    "reviewComments": {
+      "reads": 30,
+      "hits": 28,
+      "hitRate": 0.933,
+      "timeSaved": 23.5
+    },
+    "gitStatus": {
+      "reads": 15,
+      "hits": 14,
+      "hitRate": 0.933,
+      "timeSaved": 13.0
+    }
+  },
+  "alerts": [
+    {
+      "severity": "info",
+      "message": "代码理解缓存本周节省 89 分钟",
+      "suggestion": "继续保持良好使用习惯"
+    }
+  ]
+}
