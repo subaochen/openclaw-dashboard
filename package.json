@@ -1,7 +1,7 @@
 {
   "name": "openclaw-dashboard",
   "version": "1.0.0",
-  "description": "多 Agent 系统缓存监控与性能可视化仪表板",
+  "description": "OpenClaw 多 Agent 系统监控仪表板 - 缓存命中率 + 架构审查 + 性能分析",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",

@@ -4,6 +4,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D16-blue.svg)](https://nodejs.org/)
+[![GitHub stars](https://img.shields.io/github/stars/subaochen/openclaw-dashboard.svg)](https://github.com/subaochen/openclaw-dashboard/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/subaochen/openclaw-dashboard.svg)](https://github.com/subaochen/openclaw-dashboard/issues)
 
 ---
 
@@ -34,7 +36,14 @@ OpenClaw Dashboard 是一个专为多 Agent 系统设计的监控仪表板，提
 - **项目对比**：多个项目的命中率对比
 - **趋势分析**：近 7 天命中率变化趋势
 
-### 2. 告警系统
+### 2. Code Reviewer 架构审查监控（新增）
+
+- **架构审查覆盖率**：执行架构审查的任务比例
+- **重构建议数**：提出的重构建议数量
+- **架构维度评分**：6 个维度（SRP/依赖/配置/错误处理/日志/扩展性）平均分
+- **重构采纳率**：OpenCode 已执行的重构比例
+
+### 3. 告警系统
 
 - **命中率告警**：低于 50% 时触发警告
 - **异常检测**：突然下降时通知

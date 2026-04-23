@@ -300,8 +300,8 @@
 <body>
   <div class="container">
     <header>
-      <h1>🚀 缓存监控仪表板</h1>
-      <p class="subtitle">实时监控缓存命中率，持续优化性能</p>
+      <h1>🚀 OpenClaw 监控仪表板</h1>
+      <p class="subtitle">实时监控缓存命中率 + 架构审查，持续优化性能</p>
     </header>
 
     <div id="dashboard">
@@ -321,7 +321,10 @@
         hitRate: 75.3,
         totalReads: 248,
         timeSaved: 156.5,
-        activeProjects: 5
+        activeProjects: 5,
+        architectureReviewRate: 100,
+        refactorSuggestions: 12,
+        avgArchitectureScore: 4.2
       },
       trend: [
         { date: '2026-04-16', hitRate: 65.2 },
@@ -381,9 +384,19 @@
             <div class="metric-change positive">↑ 较上周 +23 min</div>
           </div>
           <div class="metric-card">
-            <div class="metric-title">活跃项目</div>
-            <div class="metric-value">${data.activeProjects}</div>
-            <div class="metric-change">→ 与上周持平</div>
+            <div class="metric-title">架构审查覆盖率</div>
+            <div class="metric-value">${data.architectureReviewRate}%</div>
+            <div class="metric-change positive">✅ 目标达成</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">重构建议</div>
+            <div class="metric-value">${data.refactorSuggestions}</div>
+            <div class="metric-change">→ 本周累计</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">架构评分</div>
+            <div class="metric-value">${data.avgArchitectureScore}</div>
+            <div class="metric-change positive">↑ 较上周 +0.3</div>
           </div>
         </div>
       `;
